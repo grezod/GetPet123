@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 
@@ -230,6 +231,12 @@ public class page_editPetData extends AppCompatActivity {
                 case R.id.btnDelete:
                     delete資料(String.valueOf(iv_object_petDataForSelfDB.getAnimalID()));
                     break;
+                case R.id.btnCamera:
+                    Intent intentCamera = new Intent(
+                            MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+
+                    startActivity(intentCamera);
+                    break;
                 case R.id.btnAdoptCondition:
                     Log.d("123", "btnAdoptCondition");
                     Intent intent = new Intent(page_editPetData.this, actDialogOfPetAdoptCondition.class);
@@ -237,7 +244,7 @@ public class page_editPetData extends AppCompatActivity {
                     startActivityForResult(intent, CDictionary.IntentRqCodeOfPetAdoptCondition);
                     break;
             }
-            if (v.getId() == R.id.btnEdit || v.getId() == R.id.btnDelete) {
+            if (v.getId() == R.id.btnEdit || v.getId() == R.id.btnDelete ||v.getId() == R.id.btnCamera) {
                 return;
             }
 
@@ -798,6 +805,9 @@ public class page_editPetData extends AppCompatActivity {
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(btn_click);
         //**************
+        btnCamera = (Button) findViewById(R.id.btnCamera);
+        btnCamera.setOnClickListener(btn_click);
+        //**************
         imgBtn1 = (ImageButton) findViewById(R.id.imgBtn1);
         imgBtn1.setOnClickListener(btn_click);
         //**************
@@ -1130,6 +1140,7 @@ public class page_editPetData extends AppCompatActivity {
     Button btnAdoptCondition;
     Button btnEdit;
     Button btnDelete;
+    Button btnCamera;
     //*********
     ImageButton imgBtn1;
     ImageButton imgBtn2;

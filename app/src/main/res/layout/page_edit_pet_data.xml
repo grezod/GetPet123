@@ -32,8 +32,6 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_page_edit_pet_data" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_height="80dp"
@@ -46,5 +44,7 @@
         android:layout_width="80dp"
         app:layout_anchorGravity="center_vertical|left"
         android:layout_gravity="bottom|right" />
+
+    <include layout="@layout/content_page_edit_pet_data" />
 
 </android.support.design.widget.CoordinatorLayout>
