@@ -29,6 +29,7 @@ import static iii.org.tw.getpet.R.id.imgBtn5;
 import static iii.org.tw.getpet.R.id.spinner_animalArea;
 import static iii.org.tw.getpet.R.id.spinner_animalKind;
 import static iii.org.tw.getpet.R.id.spinner_animalType;
+import static iii.org.tw.getpet.R.style.dialog;
 //import static iii.com.tw.testuploadpage2.R.id.edTxt_animalData_animalTypeID;
 
 
@@ -107,6 +108,7 @@ public class page_editPetData extends AppCompatActivity {
     object_ConditionOfAdoptPet iv_object_conditionOfAdoptPet_a;
     //**
     public static page_editPetData page_editPetData;
+    public static page_editPetData iv_page_editPetData;
     //***
     OkHttpClient Iv_OkHttp_client = new OkHttpClient();
     public static final MediaType Iv_MTyp_JSON = MediaType.parse("application/json; charset=utf-8");
@@ -158,10 +160,9 @@ public class page_editPetData extends AppCompatActivity {
     //*******
     private View.OnClickListener btn_click = new View.OnClickListener() {
         int IntentRCodeOfOpenAlbum = 0;
-
-
         @Override
         public void onClick(View v) {
+
             switch (v.getId()) {
                 case R.id.imgBtn1:
                     IntentRCodeOfOpenAlbum = requestCodeImgBtn1;
@@ -214,7 +215,7 @@ public class page_editPetData extends AppCompatActivity {
 
                                     } else {
                                         try {
-                                            delete資料(String.valueOf(iv_object_petDataForSelfDB.getAnimalID()));
+                                            //delete資料(String.valueOf(iv_object_petDataForSelfDB.getAnimalID()));
 
                                             uploadImageAndGetSiteBack();
                                         } catch (Exception e) {
@@ -244,6 +245,11 @@ public class page_editPetData extends AppCompatActivity {
                     startActivityForResult(intent, CDictionary.IntentRqCodeOfPetAdoptCondition);
                     break;
             }
+
+
+
+
+
             if (v.getId() == R.id.btnEdit || v.getId() == R.id.btnDelete ||v.getId() == R.id.btnCamera) {
                 return;
             }
@@ -251,15 +257,43 @@ public class page_editPetData extends AppCompatActivity {
             if (v.getId() != R.id.btnAdoptCondition) {
                 //Toast.makeText(ScrollingActivity.this,String.valueOf(IntentRCodeOfOpenAlbum),Toast.LENGTH_SHORT).show();
 
+
                 //**
-                Intent intent = new Intent();
-                //開啟Pictures畫面Type設定為image
-                intent.setType("image/*");
-                //使用Intent.ACTION_GET_CONTENT這個Action會開啟選取圖檔視窗讓您選取手機內圖檔
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                //取得相片後返回本畫面
-                startActivityForResult(intent, IntentRCodeOfOpenAlbum);
                 //**
+                new AlertDialog.Builder(page_editPetData.this)
+                        .setMessage("如欲使用相簿內的相片 請點選相簿\n如欲使用相機直接拍攝 請點擊相機")
+                        .setTitle("請選擇使用相簿或相機")
+                        .setPositiveButton("相簿", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //**
+                                Intent intent = new Intent();
+                                //開啟Pictures畫面Type設定為image
+                                intent.setType("image/*");
+                                //使用Intent.ACTION_GET_CONTENT這個Action會開啟選取圖檔視窗讓您選取手機內圖檔
+                                intent.setAction(Intent.ACTION_GET_CONTENT);
+                                //取得相片後返回本畫面
+                                startActivityForResult(intent, IntentRCodeOfOpenAlbum);
+                                //**
+
+                            }
+                        })
+                        .setNeutralButton("取消",null )
+                        .setNegativeButton("相機", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+
+
+                                //**
+                                return;
+                            }
+                        })
+                        .show();
+                //**
+                //***
+
+
             }
 
         }
