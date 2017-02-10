@@ -176,6 +176,7 @@ public class page_editPetData extends AppCompatActivity {
     //**
     ImageButton[] iv_ImageButtonArray;
     Bitmap[] bitmapArray = {bitmap1, bitmap2, bitmap3, bitmap4, bitmap5};
+    boolean[] iv_booleanArray_ImgHasChange = {false,false,false,false,false};
     boolean[] selectedImgForUploadArray = {selectedImgForUpload1, selectedImgForUpload2, selectedImgForUpload3, selectedImgForUpload4, selectedImgForUpload5};
     ArrayList<object_OfPictureImgurSite> iv_ArrayList_object_OfPictureImgurSite;
     ArrayList<object_ConditionOfAdoptPet> iv_ArrayList_object_ConditionOfAdoptPet;
@@ -228,11 +229,16 @@ public class page_editPetData extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //**
                                     for (int i =0 ; i<iv_ArrayList_Bitmap.size();i+=1) {
-                                        bitmapArray[i] = iv_ArrayList_Bitmap.get(i);
-                                        selectedImgForUploadArray[i]=true;
+
+                                        if(iv_booleanArray_ImgHasChange[i]==false){
+                                            bitmapArray[i] = iv_ArrayList_Bitmap.get(i);
+                                            selectedImgForUploadArray[i]=true;
+                                        }
 
                                     }
+
                                     //**
+
                                     String l_string_未填寫的欄位有哪些 = check確認是否欄位都有填寫();
 
                                     if (l_string_未填寫的欄位有哪些.length() > 10) {
@@ -250,7 +256,7 @@ public class page_editPetData extends AppCompatActivity {
 
                                     } else {
                                         try {
-                                            //delete資料(String.valueOf(iv_object_petDataForSelfDB.getAnimalID()));
+                                            delete資料(String.valueOf(iv_object_petDataForSelfDB.getAnimalID()));
 
                                             uploadImageAndGetSiteBack();
                                         } catch (Exception e) {
@@ -457,7 +463,14 @@ public class page_editPetData extends AppCompatActivity {
 
     private void fill塞圖片到imageButton(ImageButton[] p_ImageButtonArray,final object_petDataForSelfDB p_object_petDataForSelfDB) throws ExecutionException, InterruptedException {
         //***********
+        iv_ArrayList_Bitmap = new ArrayList<>();
+        for (int i = 0; i < bitmapArray.length ; i++) {
+            bitmapArray[i]=null;
+        }
         iv_forCountIn塞圖片到imageButton = 0;
+        //final CountDownLatch l_latch = new CountDownLatch(p_object_petDataForSelfDB.getAnimalData_Pic().size());
+
+        Log.d("++++ length",p_object_petDataForSelfDB.getAnimalData_Pic().size()+"");
 
 
 
@@ -478,6 +491,7 @@ public class page_editPetData extends AppCompatActivity {
                                         iv_ArrayList_Bitmap.add(iv_bitmap_getFromUrl);
                                         Log.d("bitmap length",iv_ArrayList_Bitmap.size()+"");
 
+
                                         //iv_forCountIn塞圖片到imageButton+=1;
 
 
@@ -497,6 +511,8 @@ public class page_editPetData extends AppCompatActivity {
 
             }
         }
+
+
 
 
 
@@ -524,6 +540,24 @@ public class page_editPetData extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             //img.setImageBitmap(imageBitmap);
+            float mScale = 1;
+
+            //如果圖片寬度大於手機寬度則進行縮放，否則直接將圖片放入ImageView內
+            if (imageBitmap.getWidth() >= 480) {
+                //判斷縮放比例
+                mScale = (float) 480 / imageBitmap.getWidth();
+            }
+
+            Matrix mMat = new Matrix();
+            mMat.setScale(mScale, mScale);
+
+            imageBitmap = Bitmap.createBitmap(imageBitmap,
+                    0,
+                    0,
+                    imageBitmap.getWidth(),
+                    imageBitmap.getHeight(),
+                    mMat,
+                    false);
 
             //**check requestCode to decide show image on which button
             switch (requestCode) {
@@ -533,6 +567,8 @@ public class page_editPetData extends AppCompatActivity {
                     iv_ImageButtonArray[0].setImageBitmap(imageBitmap);
                     selectedImgForUploadArray[0] = true;
                     bitmapArray[0] = imageBitmap;
+                    iv_booleanArray_ImgHasChange[0] = true;
+                    Log.d("bitmapArray[0]","已換成相機圖片");
 
                     //Toast.makeText(ScrollingActivity.this, selectedImgForUpload1==true? "TrueY":"FalseY", Toast.LENGTH_SHORT).show();
                     break;
@@ -540,6 +576,7 @@ public class page_editPetData extends AppCompatActivity {
                     iv_ImageButtonArray[1].setImageBitmap(imageBitmap);
                     selectedImgForUploadArray[1] = true;
                     bitmapArray[1] = imageBitmap;
+                    iv_booleanArray_ImgHasChange[1] = true;
 
                     //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn2)", Toast.LENGTH_SHORT).show();
                     break;
@@ -547,6 +584,7 @@ public class page_editPetData extends AppCompatActivity {
                     iv_ImageButtonArray[2].setImageBitmap(imageBitmap);
                     selectedImgForUploadArray[2] = true;
                     bitmapArray[2] = imageBitmap;
+                    iv_booleanArray_ImgHasChange[2] = true;
 
                     //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn3)", Toast.LENGTH_SHORT).show();
                     break;
@@ -554,6 +592,7 @@ public class page_editPetData extends AppCompatActivity {
                     iv_ImageButtonArray[3].setImageBitmap(imageBitmap);
                     selectedImgForUploadArray[3] = true;
                     bitmapArray[3] = imageBitmap;
+                    iv_booleanArray_ImgHasChange[3] = true;
 
                     //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn4)", Toast.LENGTH_SHORT).show();
                     break;
@@ -561,6 +600,7 @@ public class page_editPetData extends AppCompatActivity {
                     iv_ImageButtonArray[4].setImageBitmap(imageBitmap);
                     selectedImgForUploadArray[4] = true;
                     bitmapArray[4] = imageBitmap;
+                    iv_booleanArray_ImgHasChange[4] = true;
                     //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn5)", Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -644,6 +684,7 @@ public class page_editPetData extends AppCompatActivity {
                         //selectedImgForUpload1 = true;
                         selectedImgForUploadArray[0] = true;
                         bitmapArray[0] = mScaleBitmap;
+                        iv_booleanArray_ImgHasChange[0] = true;
 
                         //Toast.makeText(ScrollingActivity.this, selectedImgForUpload1==true? "TrueY":"FalseY", Toast.LENGTH_SHORT).show();
                         break;
@@ -651,6 +692,7 @@ public class page_editPetData extends AppCompatActivity {
                         imgBtn = (ImageButton) findViewById(R.id.imgBtn2);
                         selectedImgForUploadArray[1] = true;
                         bitmapArray[1] = mScaleBitmap;
+                        iv_booleanArray_ImgHasChange[1] = true;
 
                         //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn2)", Toast.LENGTH_SHORT).show();
                         break;
@@ -658,6 +700,7 @@ public class page_editPetData extends AppCompatActivity {
                         imgBtn = (ImageButton) findViewById(R.id.imgBtn3);
                         selectedImgForUploadArray[2] = true;
                         bitmapArray[2] = mScaleBitmap;
+                        iv_booleanArray_ImgHasChange[2] = true;
 
                         //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn3)", Toast.LENGTH_SHORT).show();
                         break;
@@ -665,6 +708,7 @@ public class page_editPetData extends AppCompatActivity {
                         imgBtn = (ImageButton) findViewById(R.id.imgBtn4);
                         selectedImgForUploadArray[3] = true;
                         bitmapArray[3] = mScaleBitmap;
+                        iv_booleanArray_ImgHasChange[3] = true;
 
                         //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn4)", Toast.LENGTH_SHORT).show();
                         break;
@@ -672,6 +716,7 @@ public class page_editPetData extends AppCompatActivity {
                         imgBtn = (ImageButton) findViewById(R.id.imgBtn5);
                         selectedImgForUploadArray[4] = true;
                         bitmapArray[4] = mScaleBitmap;
+                        iv_booleanArray_ImgHasChange[4] = true;
                         //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn5)", Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -891,7 +936,7 @@ public class page_editPetData extends AppCompatActivity {
 
     private void init() {
 
-        iv_ArrayList_Bitmap = new ArrayList<>();
+
         Factory_DynamicAnimalTypeListCreator("");
         iv_int_countHowManyPicNeedUpload = 0;
         iv_ArrayList_object_ConditionOfAdoptPet = new ArrayList<>();
@@ -1161,6 +1206,30 @@ public class page_editPetData extends AppCompatActivity {
 
         Log.d("", "進入uploadImageAndGetSiteBack");
 
+        //**
+        /*
+        for (int i = 0; i < iv_ImageButtonArray.length; i++) {
+            Bitmap l_bitmap =((BitmapDrawable)iv_ImageButtonArray[i].getDrawable()).getBitmap();
+
+            if (l_bitmap != null) {
+
+                // Toast.makeText(ScrollingActivity.this, selectedImgForUploadArray[i]==true? "True: "+i:"sFalse : "+i, Toast.LENGTH_SHORT).show();
+
+                //Drawable drawable = imgBtnArray[i].getBackground();
+                //bitmapArray[i] = ((BitmapDrawable) imgBtnArray[i].getDrawable()).getBitmap();
+                String bitmapStream = transBitmapToStream(l_bitmap);
+                //imgurUpload(bitmapStream);
+                Log.d(" 進入迴圈", String.valueOf(selectedImgForUploadArray.length));
+                uploadImgByCallable l_uploadImgByCallable = new uploadImgByCallable(bitmapStream, latch);
+                l_uploadImgByCallable.start();
+            }
+
+        }
+
+*/
+        //**
+
+
 
         for (int i = 0; i < selectedImgForUploadArray.length; i++) {
 
@@ -1178,6 +1247,8 @@ public class page_editPetData extends AppCompatActivity {
             }
 
         }
+
+
 
         latch.await();
         Log.d(" await完畢", " ");
