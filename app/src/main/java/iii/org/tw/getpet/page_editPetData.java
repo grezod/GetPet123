@@ -121,6 +121,12 @@ public class page_editPetData extends AppCompatActivity {
     static final int requestCodeImgBtn4 = 1004;
     static final int requestCodeImgBtn5 = 1005;
     //*
+    static final int iv_requestCodeOfImgBtn1ForCamera = 1006;
+    static final int iv_requestCodeOfImgBtn2ForCamera = 1007;
+    static final int iv_requestCodeOfImgBtn3ForCamera = 1008;
+    static final int iv_requestCodeOfImgBtn4ForCamera = 1009;
+    static final int iv_requestCodeOfImgBtn5ForCamera = 10010;
+    //*
     int iv_forCountIn塞圖片到imageButton;
     //**
     boolean selectedImgForUpload1 = false;
@@ -160,8 +166,10 @@ public class page_editPetData extends AppCompatActivity {
     //*******
     private View.OnClickListener btn_click = new View.OnClickListener() {
         int IntentRCodeOfOpenAlbum = 0;
+        int l_IntentRCodeOfOpenCamera = 0;
+
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
 
             switch (v.getId()) {
                 case R.id.imgBtn1:
@@ -282,11 +290,38 @@ public class page_editPetData extends AppCompatActivity {
                         .setNegativeButton("相機", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                switch (v.getId()) {
+                                    case R.id.imgBtn1:
+                                        l_IntentRCodeOfOpenCamera = iv_requestCodeOfImgBtn1ForCamera;
+                                        //Toast.makeText(ScrollingActivity.this,"String.valueOf(R.id.imgBtn1)",Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case R.id.imgBtn2:
+                                        l_IntentRCodeOfOpenCamera = iv_requestCodeOfImgBtn2ForCamera;
+                                        //Toast.makeText(ScrollingActivity.this,"String.valueOf(R.id.imgBtn2)",Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case R.id.imgBtn3:
+                                        l_IntentRCodeOfOpenCamera = iv_requestCodeOfImgBtn3ForCamera;
+                                        //Toast.makeText(ScrollingActivity.this,"String.valueOf(R.id.imgBtn3)",Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case R.id.imgBtn4:
+                                        l_IntentRCodeOfOpenCamera = iv_requestCodeOfImgBtn4ForCamera;
+                                        //Toast.makeText(ScrollingActivity.this,"String.valueOf(R.id.imgBtn4)",Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case R.id.imgBtn5:
+                                        l_IntentRCodeOfOpenCamera = iv_requestCodeOfImgBtn5ForCamera;
+                                        //Toast.makeText(ScrollingActivity.this,"String.valueOf(R.id.imgBtn5)",Toast.LENGTH_SHORT).show();
+                                        break;}
+
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(takePictureIntent, l_IntentRCodeOfOpenCamera);
+                                }
+
 
 
 
                                 //**
-                                return;
+                               // return;
                             }
                         })
                         .show();
@@ -308,6 +343,7 @@ public class page_editPetData extends AppCompatActivity {
 
         int permission = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
+
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             //未取得權限，向使用者要求允許權限
