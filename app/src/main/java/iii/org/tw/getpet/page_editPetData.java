@@ -84,6 +84,31 @@ import com.google.gson.Gson;
 import com.loopj.android.http.SyncHttpClient;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.Object.*;
+
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 //*******CLASS與畫面配對
 //ScrollingActivity.java + activity_scrolling.xml
@@ -147,6 +172,7 @@ public class page_editPetData extends AppCompatActivity {
     //**
     AlertDialog iv_ADialog_a;
     AlertDialog iv_ADialog_b;
+    private AlertDialog iv_AlertDialog_Builder;
     //**
     ImageButton[] iv_ImageButtonArray;
     Bitmap[] bitmapArray = {bitmap1, bitmap2, bitmap3, bitmap4, bitmap5};
@@ -162,6 +188,7 @@ public class page_editPetData extends AppCompatActivity {
     private ArrayList<String>[] iv_Array_動物品種清單;
     private ArrayList<String> iv_ArrayList_動物類別清單;
     private ArrayList<Bitmap> iv_ArrayList_Bitmap;
+
 
     //*******
     private View.OnClickListener btn_click = new View.OnClickListener() {
@@ -268,7 +295,7 @@ public class page_editPetData extends AppCompatActivity {
 
                 //**
                 //**
-                new AlertDialog.Builder(page_editPetData.this)
+                iv_AlertDialog_Builder = new AlertDialog.Builder(page_editPetData.this)
                         .setMessage("如欲使用相簿內的相片 請點選相簿\n如欲使用相機直接拍攝 請點擊相機")
                         .setTitle("請選擇使用相簿或相機")
                         .setPositiveButton("相簿", new DialogInterface.OnClickListener() {
@@ -286,7 +313,7 @@ public class page_editPetData extends AppCompatActivity {
 
                             }
                         })
-                        .setNeutralButton("取消",null )
+                        .setNeutralButton("取消", null)
                         .setNegativeButton("相機", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -310,7 +337,8 @@ public class page_editPetData extends AppCompatActivity {
                                     case R.id.imgBtn5:
                                         l_IntentRCodeOfOpenCamera = iv_requestCodeOfImgBtn5ForCamera;
                                         //Toast.makeText(ScrollingActivity.this,"String.valueOf(R.id.imgBtn5)",Toast.LENGTH_SHORT).show();
-                                        break;}
+                                        break;
+                                }
 
                                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -318,10 +346,8 @@ public class page_editPetData extends AppCompatActivity {
                                 }
 
 
-
-
                                 //**
-                               // return;
+                                // return;
                             }
                         })
                         .show();
@@ -336,6 +362,7 @@ public class page_editPetData extends AppCompatActivity {
     private int iv_int_countHowManyPicNeedUpload;
 
     //**********
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -343,6 +370,12 @@ public class page_editPetData extends AppCompatActivity {
 
         int permission = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkSelfPermission(Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                    0);
+        }
 
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -481,6 +514,62 @@ public class page_editPetData extends AppCompatActivity {
         if(resultCode != RESULT_OK){
             return;
         }
+        ///**************
+        if ((requestCode == iv_requestCodeOfImgBtn1ForCamera ||
+                requestCode == iv_requestCodeOfImgBtn2ForCamera ||
+                requestCode == iv_requestCodeOfImgBtn3ForCamera ||
+                requestCode == iv_requestCodeOfImgBtn4ForCamera ||
+                requestCode == iv_requestCodeOfImgBtn5ForCamera ) && resultCode == RESULT_OK) {
+            ImageButton l_partTimeImgBtn = (ImageButton) findViewById(R.id.imgBtn1);
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //img.setImageBitmap(imageBitmap);
+
+            //**check requestCode to decide show image on which button
+            switch (requestCode) {
+                case iv_requestCodeOfImgBtn1ForCamera:
+                    //((ImageButton) findViewById(R.id.imgBtn1)).setImageBitmap(imageBitmap);
+                    //selectedImgForUpload1 = true;
+                    iv_ImageButtonArray[0].setImageBitmap(imageBitmap);
+                    selectedImgForUploadArray[0] = true;
+                    bitmapArray[0] = imageBitmap;
+
+                    //Toast.makeText(ScrollingActivity.this, selectedImgForUpload1==true? "TrueY":"FalseY", Toast.LENGTH_SHORT).show();
+                    break;
+                case iv_requestCodeOfImgBtn2ForCamera:
+                    iv_ImageButtonArray[1].setImageBitmap(imageBitmap);
+                    selectedImgForUploadArray[1] = true;
+                    bitmapArray[1] = imageBitmap;
+
+                    //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn2)", Toast.LENGTH_SHORT).show();
+                    break;
+                case iv_requestCodeOfImgBtn3ForCamera:
+                    iv_ImageButtonArray[2].setImageBitmap(imageBitmap);
+                    selectedImgForUploadArray[2] = true;
+                    bitmapArray[2] = imageBitmap;
+
+                    //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn3)", Toast.LENGTH_SHORT).show();
+                    break;
+                case iv_requestCodeOfImgBtn4ForCamera:
+                    iv_ImageButtonArray[3].setImageBitmap(imageBitmap);
+                    selectedImgForUploadArray[3] = true;
+                    bitmapArray[3] = imageBitmap;
+
+                    //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn4)", Toast.LENGTH_SHORT).show();
+                    break;
+                case iv_requestCodeOfImgBtn5ForCamera:
+                    iv_ImageButtonArray[4].setImageBitmap(imageBitmap);
+                    selectedImgForUploadArray[4] = true;
+                    bitmapArray[4] = imageBitmap;
+                    //Toast.makeText(ScrollingActivity.this, "String.valueOf(R.id.imgBtn5)", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            //**
+
+
+
+
+        }
         //******如果是彈跳視窗的回應********************************
         if (resultCode == CDictionary.IntentRqCodeOfPetAdoptCondition) {
             iv_object_conditionOfAdoptPet_a =
@@ -496,7 +585,11 @@ public class page_editPetData extends AppCompatActivity {
 
         //***********如果是圖片按鈕的回應************************
 
-        if (resultCode == RESULT_OK) {
+        if ((requestCode == requestCodeImgBtn1 ||
+                requestCode == requestCodeImgBtn2 ||
+                requestCode == requestCodeImgBtn3 ||
+                requestCode == requestCodeImgBtn4 ||
+                requestCode == requestCodeImgBtn5) && resultCode == RESULT_OK) {
             //****
             Bitmap mScaleBitmap = null;
 
